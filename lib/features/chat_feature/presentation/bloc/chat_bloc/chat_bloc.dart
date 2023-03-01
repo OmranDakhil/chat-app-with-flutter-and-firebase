@@ -91,7 +91,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         (failure) => ErrorInContactsPageState(message: _mapFailureToMessage(failure)),
         (user) => UserLoaded(nameInDevice: name, user: user));
   }
-  jjjjj
+
   ChatState _mapFailureOrStreamOfChats(
       Either<Failure, Stream<List<ChatToShowEntity>>> either) {
     return either.fold(

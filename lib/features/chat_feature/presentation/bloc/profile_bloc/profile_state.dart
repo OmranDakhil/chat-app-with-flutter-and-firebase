@@ -57,13 +57,7 @@ class ErrorProfileState extends  ProfileState{
 
 }
 
-class ProfileLoaded extends ProfileState{
-  final MyUser profile;
 
-  ProfileLoaded({required this.profile});
-  @override
-  List<Object> get props => [profile];
-}
 
 class ErrorGetProfileState extends ErrorProfileState{
   ErrorGetProfileState({required super.message});

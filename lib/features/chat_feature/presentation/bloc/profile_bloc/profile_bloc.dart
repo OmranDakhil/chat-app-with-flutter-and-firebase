@@ -28,13 +28,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(_mapFailureOrSuccessNameChange(
             failureOrSuccessNameChange, event.newName));
       }
-   if(event is GetMyProfile)
-     {
-       emit(LoadingState());
-       final failureOrUser=await editProfile.getMyProfile();
-       emit(_mapFailureOrUser(
-           failureOrUser));
-     }
+   // if(event is GetMyProfile)
+   //   {
+   //     emit(LoadingState());
+   //     final failureOrUser=await editProfile.getMyProfile();
+   //     emit(_mapFailureOrUser(
+   //         failureOrUser));
+   //   }
       if (event is ChangeAboutEvent) {
         //emit(AboutChangedState(newAbout: event.newAbout));
         final failureOrSuccessAboutChange =

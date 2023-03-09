@@ -31,6 +31,3 @@ class ChangeAboutEvent extends ProfileEvent
   const ChangeAboutEvent({required this.newAbout});
 }
 
-class GetMyProfile extends ProfileEvent{
-
-}

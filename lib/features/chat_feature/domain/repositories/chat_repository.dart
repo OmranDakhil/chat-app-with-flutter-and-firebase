@@ -21,4 +21,6 @@ abstract class ChatRepository{
   Future<Either<Failure, Unit>> changeProfileAbout(String newAbout) ;
 
   Future<Either<Failure, bool>> sendTextMessage(String receiver, TextMessageEntity message);
+
+  Future<Either<Failure, Unit>> logOut();
 }

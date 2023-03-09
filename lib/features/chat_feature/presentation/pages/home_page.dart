@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:text_me/core/util/dialog_box.dart';
+import 'package:text_me/features/auth_feature/presentation/pages/welcome_page.dart';
 import 'package:text_me/features/chat_feature/presentation/bloc/pop_up_menu_bloc/pop_up_menu_bloc.dart';
 import 'package:text_me/features/chat_feature/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:text_me/features/chat_feature/presentation/pages/chats_page.dart';
@@ -29,7 +30,6 @@ class HomePage extends StatelessWidget {
                 ],
               );
             },
-
             listener: (context, state) {
               Navigator.of(context).pop();
               if (state is ProfileLoadedState) {
@@ -38,7 +38,12 @@ class HomePage extends StatelessWidget {
                           user: state.profile,
                         )));
               }
-
+              if (state is LogOutSuccessState) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const WelcomePage()),
+                  (route) => false,
+                );
+              }
             },
           )),
     );
@@ -56,7 +61,8 @@ class HomePage extends StatelessWidget {
                   child: TextButton(
                     child: const Text("My Account"),
                     onPressed: () {
-                      BlocProvider.of<PopUpMenuBloc>(context).add(GetMyProfileEvent());
+                      BlocProvider.of<PopUpMenuBloc>(context)
+                          .add(GetMyProfileEvent());
                       DialogBox().showLoadingDialog(context);
                     },
                   ),

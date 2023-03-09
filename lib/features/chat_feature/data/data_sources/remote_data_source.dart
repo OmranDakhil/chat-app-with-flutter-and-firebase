@@ -18,6 +18,8 @@ abstract class ChatRemoteDataSource {
   Future<Unit> changeProfilePhoto(File image);
   Future<Unit> changeProfilePublicName(String newPublicName);
   Future<bool> sendTextMessage(String receiver, TextMessageModel message);
+
+  Future<Unit> logOut();
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
@@ -216,5 +218,12 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     } else {
       throw UserNotFoundException();
     }
+  }
+
+  @override
+  Future<Unit> logOut() async{
+    await firebaseAuth.signOut();
+    return Future.value(unit);
+
   }
 }

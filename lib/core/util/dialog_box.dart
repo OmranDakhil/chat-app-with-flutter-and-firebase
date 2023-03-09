@@ -46,4 +46,17 @@ class DialogBox {
           );
         });
   }
+
+  showConfirmLogOutDialog({required Function() ifYes,required Function() ifNo, required BuildContext context}){
+    return showDialog(context: context, builder: (_){
+      return  AlertDialog(
+        title: const Text("confirm log out"),
+        content: const Text("are you sure to log out?"),
+        actions: [
+          ElevatedButton(onPressed: ifNo, child: const Text("No")),
+          ElevatedButton(onPressed: ifYes, child: const Text("Yes")),
+        ],
+      );
+    });
+  }
 }

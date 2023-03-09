@@ -67,9 +67,23 @@ class HomePage extends StatelessWidget {
                     },
                   ),
                 ),
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 1,
-                  child: Text("Logout"),
+                  child: TextButton(
+                      onPressed: () {
+                        DialogBox().showConfirmLogOutDialog(
+                            context: context,
+                            ifNo: () {
+                              Navigator.of(context).pop();
+                            },
+                            ifYes: () {
+                              Navigator.of(context).pop();
+                              BlocProvider.of<PopUpMenuBloc>(context)
+                                  .add(LogOutEvent());
+                              DialogBox().showLoadingDialog(context);
+                            });
+                      },
+                      child: const Text("sign out ")),
                 ),
               ];
             }))

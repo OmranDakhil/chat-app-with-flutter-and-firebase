@@ -22,11 +22,13 @@ class PopUpMenuBloc extends Bloc<PopUpMenuEvent, PopUpMenuState> {
       // TODO: implement event handler
 
       if (event is GetMyProfileEvent) {
+        emit(PopUpMenuLoadingState());
         final failureOrUser = await editProfile.getMyProfile();
         emit(_mapFailureOrUser(failureOrUser));
       }
 
       if (event is LogOutEvent) {
+        emit(PopUpMenuLoadingState());
         final failureOrLogOutSuccess = await logOut();
         emit(_mapFailureOrLogOutSuccess(failureOrLogOutSuccess));
       }

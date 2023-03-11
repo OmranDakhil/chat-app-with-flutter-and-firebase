@@ -36,6 +36,7 @@ class HomePage extends StatelessWidget {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => UserInformationPage(
                           user: state.profile,
+                      withButton: false,
                         )));
               }
               if (state is LogOutSuccessState) {

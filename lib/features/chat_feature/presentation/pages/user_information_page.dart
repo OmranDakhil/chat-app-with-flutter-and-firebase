@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:text_me/core/widgets/loading_widget.dart';
 import 'package:text_me/features/chat_feature/domain/entities/user_entity.dart';
 import 'package:text_me/features/chat_feature/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:text_me/features/chat_feature/presentation/pages/home_page.dart';
 import 'package:text_me/features/chat_feature/presentation/widgets/user_information_page_widgets/change_name_or_about_widget.dart';
 import 'package:text_me/features/chat_feature/presentation/widgets/user_information_page_widgets/change_photo_widget.dart';
 import '../../../../core/util/snackbar_message.dart';
@@ -10,7 +11,8 @@ import '../../../../core/widgets/my_button.dart';
 
 class UserInformationPage extends StatelessWidget {
   final MyUser? user;
-  const UserInformationPage({Key? key, this.user}) : super(key: key);
+  final bool withButton;
+  const UserInformationPage({Key? key, this.user, required this.withButton}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,35 +40,50 @@ class UserInformationPage extends StatelessWidget {
           if (state is LoadingState) {
             return const LoadingWidget();
           } else {
-            return ListView(
-              children: [
-                Column(
-                  children: [
-                    ChangePhotoWidget(
-                        imageUrl: user != null && user!.userImageUrl != null
-                            ? user!.userImageUrl
-                            : null),
-                    ChangeNameOrAboutWidget(
-                      isName: true,
-                      nameOrAbout: user != null ? user!.publicName : null,
-                    ),
-                    ChangeNameOrAboutWidget(
-                      isName: false,
-                      nameOrAbout: user != null ? user!.about : null,
-                    ),
-                     Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView(
                       children: [
-                        MyButton(
-                            text: "continue",
-                            color: Colors.blueGrey,
-                            onPressed: () {}),
+                        Column(
+                          children: [
+                            ChangePhotoWidget(
+                                imageUrl: user != null && user!.userImageUrl != null
+                                    ? user!.userImageUrl
+                                    : null),
+                            ChangeNameOrAboutWidget(
+                              isName: true,
+                              nameOrAbout: user != null ? user!.publicName : null,
+                            ),
+                            ChangeNameOrAboutWidget(
+                              isName: false,
+                              nameOrAbout: user != null ? user!.about : null,
+                            ),
+
+
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Visibility(
+                      visible: withButton,
+                      child: MyButton(
+                          text: "continue",
+                          color: Colors.blueGrey,
+                          onPressed: () {
+                            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                builder: (_) => const HomePage()), (route) => false);
+                          }),
+                    ),
+                  ),
+                ],
+              ),
             );
           }
         },

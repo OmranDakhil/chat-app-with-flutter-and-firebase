@@ -30,6 +30,9 @@ class HomePage extends StatelessWidget {
                 ],
               );
             },
+            listenWhen: (previous, current) {
+              return current is! PopUpMenuLoadingState;
+            },
             listener: (context, state) {
               Navigator.of(context).pop();
               if (state is ProfileLoadedState) {

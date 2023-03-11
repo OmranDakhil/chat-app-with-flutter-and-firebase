@@ -18,33 +18,56 @@ import 'package:text_me/features/chat_feature/domain/use_cases/get_all_chats_use
 import 'package:text_me/features/chat_feature/domain/use_cases/get_all_contacts_use_case.dart';
 import 'package:text_me/features/chat_feature/domain/use_cases/get_all_messages_to_chat_use_case.dart';
 import 'package:text_me/features/chat_feature/domain/use_cases/get_user_use_case.dart';
+import 'package:text_me/features/chat_feature/domain/use_cases/log_out_use_case.dart';
 import 'package:text_me/features/chat_feature/domain/use_cases/send_text_message_use_case.dart';
 import 'package:text_me/features/chat_feature/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:text_me/features/chat_feature/presentation/bloc/pop_up_menu_bloc/pop_up_menu_bloc.dart';
 import 'core/networks/network_info.dart';
 import 'features/auth_feature/domain/repositries/auth_repository.dart';
 import 'features/chat_feature/presentation/bloc/profile_bloc/profile_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  //blocs
   sl.registerFactory(() => AuthBloc(otpVerify: sl(), signInWithPhoneNumber: sl()));
   sl.registerFactory(() => ChatBloc(getAllContacts: sl(),getUser: sl(),getAllChats: sl(),getAllMessagesToChat: sl(),sendTextMessage: sl()));
   sl.registerFactory(() => ProfileBloc(editProfile: sl()));
+  sl.registerFactory(() => PopUpMenuBloc(editProfile: sl(), logOut: sl()));
+
+
+  // use cases
   sl.registerLazySingleton(() => SendTextMessageUseCase(chatRepository: sl()));
   sl.registerLazySingleton(() => EditProfileUseCase(chatRepository: sl()));
   sl.registerLazySingleton(() => GetAllContactsUseCase(chatRepository: sl()));
   sl.registerLazySingleton(() => GetUserUseCase(chatRepository: sl()));
   sl.registerLazySingleton(() => GetAllMessagesToChatUseCase(chatRepository: sl()));
   sl.registerLazySingleton(() => GetAllChatsUseCase(chatRepository: sl()));
-  sl.registerLazySingleton<ChatRepository>(() =>ChatRepositoryImpl(contactInfo: sl(),networkInfo: sl(),remoteDataSource: sl()) );
-  sl.registerLazySingleton(() =>ContactsInfo(phoneNumberUtil: sl()) );
-  sl.registerLazySingleton(() =>PhoneNumberUtil());
   sl.registerLazySingleton(() => OTPVerifyUsecase(authRepository: sl()));
   sl.registerLazySingleton(() => SignInWithPhoneNumberUsecase(authRepository: sl()));
+  sl.registerLazySingleton(() => LogOutUseCase(chatRepository: sl()));
+
+
+  //  repositories
+  sl.registerLazySingleton<ChatRepository>(() =>ChatRepositoryImpl(contactInfo: sl(),networkInfo: sl(),remoteDataSource: sl()) );
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(networkInfo: sl(), remoteDataSource: sl()));
+
+
+
+
+
+  //remote data source
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceWithFirebaseAuth(auth: sl()));
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(firebaseAuth: sl(),firebaseFirestore: sl(),firebaseStorage: sl()));
+
+
+  //  external
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(internetConnectionChecker: sl()));
   sl.registerLazySingleton(() => InternetConnectionChecker());
+  sl.registerLazySingleton(() =>ContactsInfo(phoneNumberUtil: sl()) );
+  sl.registerLazySingleton(() =>PhoneNumberUtil());
+
+
+  // firebase
   sl.registerLazySingleton(() => FirebaseAuth.instance);
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
   sl.registerLazySingleton(() => FirebaseStorage.instance);

@@ -32,9 +32,7 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<Either<Failure, MyUser>> getUser([String? phoneNumber]) async {
     if (await networkInfo.isConnected) {
       try {
-
-
-        MyUser user= await remoteDataSource.getUser(phoneNumber);
+        MyUser user = await remoteDataSource.getUser(phoneNumber);
 
         return right(user);
       } on UserNotFoundException {
@@ -72,7 +70,7 @@ class ChatRepositoryImpl implements ChatRepository {
 
           return chatsToShow;
         });
-        return Right(loadedChats!);
+        return Right(loadedChats);
       } on Exception {
         return left(ServerFailure());
       }
@@ -114,8 +112,7 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> changeProfilePhoto(
-      File image) async {
+  Future<Either<Failure, Unit>> changeProfilePhoto(File image) async {
     if (await networkInfo.isConnected) {
       try {
         await remoteDataSource.changeProfilePhoto(image);
@@ -155,6 +152,20 @@ class ChatRepositoryImpl implements ChatRepository {
             await remoteDataSource.sendTextMessage(receiver, messageModel);
         return right(isFirstMessage);
       } on Exception {
+        return left(ServerFailure());
+      }
+    } else {
+      return left(OffLineFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> logOut() async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.logOut();
+        return right(unit);
+      } on ServerException {
         return left(ServerFailure());
       }
     } else {

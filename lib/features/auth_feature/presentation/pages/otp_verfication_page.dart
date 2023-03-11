@@ -32,7 +32,7 @@ class OtpVerificationPage extends StatelessWidget {
           SnakBarMessage()
               .showSucessSnakbar(context: context, message: state.message);
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => const UserInformationPage()));
+              builder: (_) => const UserInformationPage(withButton: true,)));
         }
         if (state is ErrorAuthState) {
           SnakBarMessage()

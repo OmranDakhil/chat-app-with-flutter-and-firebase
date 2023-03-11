@@ -28,13 +28,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(_mapFailureOrSuccessNameChange(
             failureOrSuccessNameChange, event.newName));
       }
-   if(event is GetMyProfile)
-     {
-       emit(LoadingState());
-       final failureOrUser=await editProfile.getMyProfile();
-       emit(_mapFailureOrUser(
-           failureOrUser));
-     }
+
       if (event is ChangeAboutEvent) {
         //emit(AboutChangedState(newAbout: event.newAbout));
         final failureOrSuccessAboutChange =
@@ -66,11 +60,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         (_) => AboutChangedState(newAbout: newAbout));
   }
 
-  ProfileState _mapFailureOrUser(Either<Failure, MyUser> failureOrUser) {
-    return failureOrUser.fold(
-            (failure) => ErrorGetProfileState(message: _mapFailureToMessage(failure)),
-            (user) => ProfileLoaded(profile: user));
-  }
+
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {

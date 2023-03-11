@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:text_me/core/util/dialog_box.dart';
+import 'package:text_me/features/auth_feature/presentation/pages/welcome_page.dart';
+import 'package:text_me/features/chat_feature/presentation/bloc/pop_up_menu_bloc/pop_up_menu_bloc.dart';
 import 'package:text_me/features/chat_feature/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:text_me/features/chat_feature/presentation/pages/chats_page.dart';
 import 'package:text_me/features/chat_feature/presentation/pages/contacts_page.dart';
@@ -19,7 +21,7 @@ class HomePage extends StatelessWidget {
             preferredSize: const Size.fromHeight(65.0),
             child: _buildAppBar(),
           ),
-          body: BlocConsumer<ProfileBloc, ProfileState>(
+          body: BlocConsumer<PopUpMenuBloc, PopUpMenuState>(
             builder: (context, state) {
               return const TabBarView(
                 children: [
@@ -28,16 +30,20 @@ class HomePage extends StatelessWidget {
                 ],
               );
             },
-            listenWhen: (previous, current) {
-              return current is ProfileLoaded || current is ErrorGetProfileState;
-            },
             listener: (context, state) {
               Navigator.of(context).pop();
-              if (state is ProfileLoaded) {
+              if (state is ProfileLoadedState) {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => UserInformationPage(
                           user: state.profile,
+                      withButton: false,
                         )));
+              }
+              if (state is LogOutSuccessState) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const WelcomePage()),
+                  (route) => false,
+                );
               }
             },
           )),
@@ -56,14 +62,29 @@ class HomePage extends StatelessWidget {
                   child: TextButton(
                     child: const Text("My Account"),
                     onPressed: () {
-                      BlocProvider.of<ProfileBloc>(context).add(GetMyProfile());
+                      BlocProvider.of<PopUpMenuBloc>(context)
+                          .add(GetMyProfileEvent());
                       DialogBox().showLoadingDialog(context);
                     },
                   ),
                 ),
                 PopupMenuItem<int>(
                   value: 1,
-                  child: Text("Logout"),
+                  child: TextButton(
+                      onPressed: () {
+                        DialogBox().showConfirmLogOutDialog(
+                            context: context,
+                            ifNo: () {
+                              Navigator.of(context).pop();
+                            },
+                            ifYes: () {
+                              Navigator.of(context).pop();
+                              BlocProvider.of<PopUpMenuBloc>(context)
+                                  .add(LogOutEvent());
+                              DialogBox().showLoadingDialog(context);
+                            });
+                      },
+                      child: const Text("sign out ")),
                 ),
               ];
             }))
